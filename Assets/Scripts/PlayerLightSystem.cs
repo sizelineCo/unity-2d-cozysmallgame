@@ -2,19 +2,25 @@ using UnityEngine;
 
 public class PlayerLightSystem : MonoBehaviour
 {
-    public float light = 50f;        // 当前光值
-    public float decayRate = 2f;     // 每秒减少
-    public float collectAmount = 10f; // 收集增加
+    public float light = 50f;
+    public float decayRate = 5f;
+    public float collectAmount = 10f;
+
+    private PlayerMovement movement;
+
+    void Start()
+    {
+        movement = GetComponent<PlayerMovement>();
+    }
 
     void Update()
     {
-        // 光随时间减少
+        // ❌ 只停“消耗”，不影响收集
+        if (GameManager.Instance != null && GameManager.Instance.isGameEnded)
+            return;
+
         light -= decayRate * Time.deltaTime;
-
-        if (light < 0)
-            light = 0;
-
-        Debug.Log("Light: " + light);
+        light = Mathf.Clamp(light, 0, 100);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
